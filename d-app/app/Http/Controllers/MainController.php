@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\KnifeExport;
 use App\Models\Knife;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class MainController extends Controller
 {
@@ -71,5 +73,9 @@ class MainController extends Controller
         $status = Knife::where('id', $id)->delete();
         if ($status) return response(1);
         else return response(0);
+    }
+
+    public function export() {
+        return Excel::download(new KnifeExport, 'backup.xlsx');
     }
 }

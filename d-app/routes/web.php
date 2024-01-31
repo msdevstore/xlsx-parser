@@ -24,4 +24,7 @@ Route::post('/upsert', [MainController::class, 'upsert']);
 
 Route::get('/delete/{id}', [MainController::class, 'delete']);
 
+Route::get('/export', [MainController::class, 'export']);
+
+
 

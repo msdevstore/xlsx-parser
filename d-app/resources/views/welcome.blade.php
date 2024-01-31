@@ -88,6 +88,12 @@
             <div class="table-container">
                 <table id="example" class="display" style="width:100%"></table>
             </div>
+            <div class="d-flex justify-content-end my-5">
+{{--                <button type="button" class="btn btn-primary" id="export-btn">--}}
+{{--                    Export Excel--}}
+{{--                </button>--}}
+                <a href="{{ URL::to('export') }}" class="btn btn-primary">Export Excel</a>
+            </div>
         </div>
         <!-- The Modal -->
         <div class="modal" id="myModal">
@@ -555,6 +561,22 @@
                         } else {
                             alert('Something went wrong!');
                         }
+                    },
+                    error: function(err) {
+                        console.log(err);
+                        alert("Failed!");
+                    }
+                })
+            })
+
+            $('#export-btn').click(function() {
+                $.ajax({
+                    url: '/export',
+                    type: 'GET',
+                    success: function(res) {
+                        console.log(res);
+                        if (res === '1') alert("Success!");
+                        else alert("Something went wrong!");
                     },
                     error: function(err) {
                         console.log(err);
