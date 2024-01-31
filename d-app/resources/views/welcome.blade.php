@@ -14,8 +14,26 @@
         <!-- Latest compiled and minified CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
+        <!-- Start MultiSelect -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" />
+        <!-- Or for RTL support -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.rtl.min.css" />
+        <!-- End MultiSelect -->
+
+        <!-- Scripts -->
+
+        <!-- Start MultiSelect -->
+{{--        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.0/dist/jquery.slim.min.js"></script>--}}
+        <!-- End MultiSelect -->
+
         <!-- Latest compiled JavaScript -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Start MultiSelect -->
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.full.min.js"></script>
+        <!-- End MultiSelect -->
+
         <link rel="stylesheet" type="text/css" href="./assets/custom.css">
     </head>
     <body>
@@ -78,6 +96,36 @@
                         <div class="form-group col-2">
                             <button type="button" class="btn btn-primary w-100" id="add-btn">Add New</button>
                         </div>
+                        <div class="form-group col-8">
+                            <select class="form-select" id="multiple-select-field" data-placeholder="Hide Columns" multiple>
+                                <option value="1">Service IDs</option>
+                                <option value="2">Pitch</option>
+                                <option value="3">Type</option>
+                                <option value="4">Gear</option>
+                                <option value="5">Shape</option>
+                                <option value="6">Blade Type</option>
+                                <option value="7">Cut Type</option>
+                                <option value="8">Cut Position</option>
+                                <option value="9">Corner Radius</option>
+                                <option value="10">Size Across</option>
+                                <option value="11">Size Around</option>
+                                <option value="12">No Across</option>
+                                <option value="13">No Around</option>
+                                <option value="14">Gap Across</option>
+                                <option value="15">Gap Around</option>
+                                <option value="16">Center-to-Center Across</option>
+                                <option value="17">Center-to-Center Around</option>
+                                <option value="18">Liner</option>
+                                <option value="19">Perforation</option>
+                                <option value="20">Location</option>
+                                <option value="21">Supplier ID</option>
+                                <option value="22">Notes</option>
+                                <option value="23">Size Width</option>
+                                <option value="24">Repeat Length</option>
+                                <option value="25">No of Knife</option>
+                                <option value="26">Status</option>
+                            </select>
+                        </div>
                         <div class="form-group col-2">
                             <button type="button" class="btn btn-primary w-100" id="search-btn">Search</button>
                         </div>
@@ -89,9 +137,6 @@
                 <table id="example" class="display" style="width:100%"></table>
             </div>
             <div class="d-flex justify-content-end my-5">
-{{--                <button type="button" class="btn btn-primary" id="export-btn">--}}
-{{--                    Export Excel--}}
-{{--                </button>--}}
                 <a href="{{ URL::to('export') }}" class="btn btn-primary">Export Excel</a>
             </div>
         </div>
@@ -344,6 +389,13 @@
     </body>
     <script>
         $(document).ready(function() {
+
+            $('#multiple-select-field').select2({
+                theme: "bootstrap-5",
+                width: $( this ).data( 'width' ) ? $( this ).data( 'width' ) : $( this ).hasClass( 'w-100' ) ? '100%' : 'style',
+                placeholder: $( this ).data( 'placeholder' ),
+                closeOnSelect: false,
+            });
             // let filePath = 'example.xlsx';
 
             // Load the XLSX file
@@ -377,6 +429,7 @@
             // req.send();
 
             const knives = {{Js::from($knives)}};
+            const kLen = knives.length;
 
             let table = $('#example').DataTable({
                 data: knives,
@@ -412,6 +465,22 @@
 
                 if (cutType !== 'All') table.column(7).search(cutType).draw(); else table.column(7).search('').draw();
                 if (perforation !== 'All') table.column(19).search(perforation).draw(); else table.column(19).search('').draw();
+
+                // table.column(2).visible(false);
+            })
+
+            $('#multiple-select-field').change(function(e) {
+                const selectedArr = $(this).val();
+                const notSelectedElements = $(this).find('option').not(':selected');
+                const unselectedArr = notSelectedElements.map(function () {
+                    return this.value;
+                }).get();
+                selectedArr.forEach(i => {
+                    table.column(i).visible(false);
+                })
+                unselectedArr.forEach(i => {
+                    table.column(i).visible(true);
+                })
             })
 
             let globalId = 0;
