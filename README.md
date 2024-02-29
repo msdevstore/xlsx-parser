@@ -1,4 +1,4 @@
-# XLSX PARSER
+# XLSX PARSER - Datatable jQuery Effective Use
 
 * Load Excel file and save its information filtered to mysql database
 * Generate Table using datatable jquery library
